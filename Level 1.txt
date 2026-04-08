@@ -52,4 +52,106 @@ SSL
 13. reload apache2
 14. Masuk kaktus
 
-Allo 
+BUAT DEVICE SERVER & MIKROTIK
+Server = net-snmp
+router = generic
+
+
+Tunggu sampai sukses 
+■ Sebelum membuat graphs untuk Router kita terlebih dahulu untuk 
+mengkonfigurasi protokol SNMP pada Mikrotik, silahkan masuk ke dalam 
+mikrotik menggunakan Winbox
+Masuk ke menu IP > SNMP
+Pastikan centang Enabled. 
+Conctact Info : admin 
+Location : Router Ciksel 
+Lalu klik apply, lanjutkan dengan Klik Communities 
+Doble klik di name public, kemudian ikuti langkah berikut 
+Name : public 
+Address : 0.0.0.0/0 (atau tidak Ip router) 
+Pastikan Centang Read Access, Jika sudah Lalu Apply. 
+■ Selanjutnya kita akan menambahkan Graphs untuk Device Server dan Router 
+kalian
+
+1️⃣ 🚫 BLOCK VLAN 20 → VLAN 30 (WAJIB)
+
+👉 Siswa tidak boleh akses server
+
+/ip firewall filter add chain=forward \
+src-address=192.168.20.0/24 \
+dst-address=192.168.200.0/24 \
+action=drop comment="BLOCK SISWA KE SERVER"
+2️⃣ ✅ IZINKAN VLAN 10 → VLAN 30
+
+👉 Guru boleh akses server
+
+/ip firewall filter add chain=forward \
+src-address=192.168.10.0/24 \
+dst-address=192.168.200.0/24 \
+action=accept comment="ALLOW GURU KE SERVER"
+3️⃣ 🔒 AKSES KE ROUTER (INPUT RULE)
+❌ BLOCK VLAN 20 ke router (Winbox & SSH)
+/ip firewall filter add chain=input \
+src-address=192.168.20.0/24 \
+protocol=tcp dst-port=8291 \
+action=drop comment="BLOCK WINBOX SISWA"
+
+/ip firewall filter add chain=input \
+src-address=192.168.20.0/24 \
+protocol=tcp dst-port=22 \
+action=drop comment="BLOCK SSH SISWA"
+✅ IZINKAN VLAN 10 (Guru) ke router
+/ip firewall filter add chain=input \
+src-address=192.168.10.0/24 \
+protocol=tcp dst-port=22 \
+action=accept comment="ALLOW SSH GURU"
+
+/ip firewall filter add chain=input \
+src-address=192.168.10.0/24 \
+protocol=tcp dst-port=8291 \
+action=accept comment="ALLOW WINBOX GURU"
+4️⃣ 📝 LOGGING (WAJIB UKK)
+
+👉 Logging semua VLAN
+
+/ip firewall filter add chain=forward \
+out-interface=vlan10 action=log log-prefix="LOG VLAN10"
+
+/ip firewall filter add chain=forward \
+out-interface=vlan20 action=log log-prefix="LOG VLAN20"
+
+/ip firewall filter add chain=forward \
+out-interface=vlan30 action=log log-prefix="LOG VLAN30"
+
+👉 Cek log:
+
+/log print
+5️⃣ 📡 SNMP (UNTUK CACTI)
+Aktifkan SNMP:
+/snmp set enabled=yes contact="admin" location="Lab UKK"
+Set community:
+/snmp community set [find name=public] addresses=0.0.0.0/0
+
+👉 Pastikan port 161 dibuka:
+
+/ip firewall filter add chain=input \
+protocol=udp dst-port=161 \
+action=accept comment="ALLOW SNMP"
+
+6️⃣ ⚠️ RULE PENTING TAMBAHAN (BIAR AMAN)
+Allow koneksi established (WAJIB di atas)
+/ip firewall filter add chain=forward connection-state=established,related action=accept
+/ip firewall filter add chain=input connection-state=established,related action=accept
+
+Drop semua selain yang diizinkan (OPTIONAL tapi bagus)
+/ip firewall filter add chain=input action=drop comment="DROP ALL INPUT"
+
+⚠️ Taruh paling bawah!
+
+established,related
+allow guru
+block siswa
+logging
+drop all
+
+
