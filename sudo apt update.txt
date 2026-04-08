@@ -1,0 +1,18 @@
+sudo apt update
+
+sudo apt install php libapache2-mod-php php-mysql php-snmp php-xml php-gd
+
+sudo a2enmod php8.2
+
+sudo systemctl restart apache2
+
+
+timedatectl set-ntp true
+
+timedatectl set-timezone Asia/Jakarta
+
+apt install systemd-timesyncd -y
+
+timedatectl set-ntp true
+
+systemctl restart systemd-timesyncd

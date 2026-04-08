@@ -1,0 +1,8 @@
+1.Konfig BIND9
+2. Konfig Apache2
+3.Buat SSL
+4. Konfig Cacti
+4. Snmpd.conf
+5. Masukkan ke monitor web=000 dan ssl=default-ssl nya
+
+apt install sudo dnsutils bind9 apache2 mariadb-server php php-mysql cacti snmp snmpd openssl -y

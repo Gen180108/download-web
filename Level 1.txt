@@ -1,0 +1,55 @@
+ 
+apt Level 1
+
+1. install (apt,sudo, bind9, dnsutils)
+2. isi named.conf.local (+)
+3.cp db.local to domain
+4.cp db.127 to ip
+5.isi dns resolv
+6.restart bind9
+7.nslookup
+
+level 2 (web & ssl)
+
+1.install apache2
+2.000-default.conf
+3.restart apache2
+4.cek web
+
+
+buat ssl
+6. (HAFALIN) sudo openssl req -x509 -nodes - days 365 -newkey rsa:2048
+-keyout /etc/ssl/private/gen-ciksel.sch.key
+-out /etc/ssl/certs/gen-ciksel.sch.crt
+
+9. lakukan untuk monitor juga
+10. /sites-available/default-ssl.conf
+11. sudo a2enmod ssl
+12. sudo a2ensite default-ssl.conf
+13. restart apache2
+14. cek https web
+
+level 3 (cacti)
+
+#masuk ke apache2
+1. (HAFALIN) apt install apache2 mariadb-server php php-mysql snmp snmpd cacti -y
+
+2. KONFIGURASI SNMP (HAFALIN) /etc/snmp/snmpd.conf
+ add agentaddress udp:161
+4. rocommunity public localhost
+5. restart snmpd
+
+MONITOR CACTI
+6. (HAFALIN) salin cp /apache2/sites-avail/000-default.conf to /etc/apache2/sites-avail/monitor-cacti.conf
+7. masuk monitor-cacti.conf ubah (/usr/share/cacti/site)
+8. sudo a2ensite monitor-cacti.conf
+9. reload apache2
+
+SSL
+10. salin cp /sites-avail/default-ssl.conf to monitor-ssl.conf
+11. masuk monitor (ADD DIRECTORY)
+12.sudo a2ensite monitor-ssl.conf
+13. reload apache2
+14. Masuk kaktus
+
+Allo 
