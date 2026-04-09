@@ -1,0 +1,35 @@
+sudo
+bind9
+dnsutils
+named.conf.local zone
+cp db loc to dom
+"
+nano dom & ip
+resolv
+restart bind
+nslookup
+
+apache2
+000
+restart 
+cek
+
+
+sudo openssl
+default.ssl.conf
+a2enmod ssl
+a2ensite default
+restart
+certif cek
+
+install cacti
+snmod.conf
+restart
+
+cp 000 -monitor-c
+cp default -monitor-s
+nano mc & ms
+a2ensite mc & ms
+reload
+kaktus
+
