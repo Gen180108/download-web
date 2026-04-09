@@ -1,1 +1,525 @@
+MODUL AJAR PERSIAPAN UJI KOMPETENSI KEAHLIAN TAHUN PELAJARAN 2025/2026
+TEKNIK KOMPUTER DAN JARINGAN
+Alokasi Waktu: 8 jam
+Bentuk Soal	: Penugasan Perorangan
+Judul Tugas	: Pembangunan Sistem Monitoring Jaringan dan Server Real-Time untuk Peningkatan Kinerja dan Keamanan Layanan Jaringan
+Tim Penyusun :
+1.	Risda Cahya Utami, S.Pd.
+2.	Ana Qurrota A’yun, S.Pd.
+3.	Indra Sandika Permana
+4.	Muhammad Rafliza Ardiansa
+
+
+A.	DESKRIPSI SOAL
+SMK XYZ sedang membangun laboratorium jaringan yang aman untuk memisahkan akses Guru/Admin, Siswa, dan Server. Namun jaringan yang ada belum memiliki:
+●	Segmentasi VLAN.
+●	Pengamanan akses antar segmen.
+●	Sistem monitoring server & perangkat jaringan.
+●	Kebijakan keamanan informasi yang terdokumentasi.
+●	Pencatatan aset TI. Akibatnya terjadi beberapa insiden:
+●	Upaya brute force login pada router.
+●	Situs web sekolah lambat diakses siswa.
+●	Tidak ada deteksi dini gangguan server.
+Anda ditugaskan sebagai Junior Cyber Security untuk membangun sistem keamanan jaringan sekaligus menyediakan monitoring real-time terhadap perangkat dan server.
+Anda harus melakukan konfigurasi jaringan, layanan server, pengamanan perangkat, serta penyusunan dokumen keamanan, dengan ketentuan;
+ 
+a.	Topologi Teknis
+●	Router sebagai gateway dan firewall.
+●	Switch manageable sebagai segmentasi VLAN.
+●	Server Linux sebagai DNS, Web Server, dan Monitoring Server.
+
+b.	Rincian Teknis VLAN
+VLAN	Nama	Network	Gateway
+10	Guru_Admin	192.168.10.0/24	192.168.10.1
+20	Siswa	192.168.20.0/24	192.168.20.1
+30	Server	192.168.200.0/24	192.168.200.1
+Server Linux (Static)
+●	IP: 192.168.200.x/24
+●	DNS + Web + Monitoring
+
+Domain
+●	nama_siswa-ciksel.sch
+ 
+c.	Gambar Kerja
+
+
+
+B.	PERSIAPAN ALAT DAN BAHAN
+
+No	Alat dan Bahan	Spesifikasi Minimal	Jumlah
+1.	Router	●	Minimal memiliki 2 port Gigabit Ethernet
+●	Mendukung Inter-VLAN Routing
+●	Fitur Firewall
+●	Mendukung DHCP Server/Relay
+●	Mendukung SNMP
+(Simple Network Management Protocol)	1
+2.	Switch	●	Managed Switch Layer 2
+●	Mendukung VLAN Trunking (802.1Q)
+●	Mendukung Access Port
+untuk segmentasi VLAN	1
+ 
+		●	Min. 8 Port Gigabit Ethernet
+(10/100/1000
+Mbps)	
+3.	Server VM	●	Prosesor: Minimal 2 core / 8
+thread atau setara
+●	RAM: Minimal 8 GB
+●	Storage: SSD/HDD minimal 500 GB
+●	Network Interface: Gigabit Ethernet NIC
+●	Sistem Operasi: Linux Server / Windows Server	1
+4.	Komputer Client	●	Prosesor: Minimal 1 core / 2
+thread atau setara
+●	RAM: Minimal 4 GB (disarankan 8 GB)
+●	Storage: SSD minimal 128 GB
+●	Network Interface: Gigabit Ethernet (10/100/1000 Mbps)	2
+5.	Patchcore UTP	Standar CAT5e atau CAT6.	Sesuai Kebutuhan
+6.	Sumber Internet (ISP)	Koneksi yang stabil dengan alokasi
+bandwidth yang memadai.	Sesuai Kebutuhan
+
+C.	LANGKAH KONFIGURASI PERANGKAT JARINGAN
+a.	Konfigurasi Router Mikrotik
+■	Konfigurasi DHCP Client untuk sumber internet di IP > DHCP Client > +
+*Sesuaikan pilihan Interface dari mana kamu mendapatkan sumber internet
+> OK
+ 
+ 
+
+■	Konfigurasi NAT di Mikrotik untuk akses internet. Di IP > Firewall > NAT > +
+* Ubah Chain, Out Interface, dan Action sesuai gambar lalu OK
+
+ 
+ 
+
+
+■	Konfigurasi VLAN
+Buat VLAN 10, 20, 30 pada interface trunk (ether2).
+*Sesuaikan nama VLAN supaya kamu tidak bingung, hanya set Name, VLAN ID, dan Interface, selain itu biarkan saja
+Buat VLAN 10, 20, 30 pada interface trunk (ether2) > OK
+
+
+
+
+
+
+ 
+pastikan ketiga VLAN sudah berhasil dibuat
+
+■	Konfigurasi IP Address VLAN, setting pengalamatan IP pada IP > Addresses
+> +:
+1.	192.168.10.1/24 di Interface vlan10 lalu > OK
+
+
+2.	192.168.20.1/24 di Interface vlan20 lalu > OK
+
+ 
+3.	192.168.200.1/24 di Interface vlan30 lalu > OK
+
+
+■	Buat DHCP Server di VLAN 10. IP > DHCP Server > DHCP Setup > pilih Interface > Next
+Note : Tambahkan DNS Server sesuai IP Server masing-masing siswa (Contoh : 192.168.200.203) dan DN S google 8.8.8.8
+ 
+■	Buat DHCP Server di VLAN 20. IP > DHCP Server > DHCP Setup > pilih Interface > Next
+Note : Tambahkan DNS Server sesuai IP Server masing-masing siswa (Contoh : 192.168.200.203) dan DNS google 8.8.8.8
+
+
+ 	 
+
+b.	Konfigurasi Switch Managable
+■	IP Default Switch Managable bisa dilihat dibelakang perangkat switch yaitu : 10.44.77.200
+■	Set IP Static untuk bisa konfigurasi switch managable .
+ 
+ 
+■	Search di browser IP default perangkat Switch Ruijie
+
+
+■	Input Username & Password perangkat
+
+■	Buka tab VLAN Members, lalu enable VLAN Settings untuk mengaktifkan pengaturan VLAN.
+*jika diminta membuat password baru. Buat saja passwordnya:admin123!, lalu relogin
+ 
+ 
+
+■	Membuat VLAN 10, 20, 30 di switch. Tambahkan VLAN ID 10, 20, 30 dengan klik Add
+ 
+
+
+
+■	Membuat settingan port pada tab VLAN Settings,
+1.	konfigurasi port 1 trunk ke router, VLAN Type Trunk, Permit VLAN masukkan VLAN 1,10,20 dan 30 sesuaikan seperti gambar dibawah ini:
+ 
+ 
+
+
+2.	Konfigurasi access Port 2 ke VLAN 10 (Guru_Admin), sesuaikan seperti gambar ini:
+
+
+
+3.	Konfigurasi access Port 3-4 ke VLAN 20 (Siswa), sesuaikan seperti gambar ini:
+
+ 
+4.	Konfigurasi access Port 5 ke VLAN 30 (Server), sesuaikan seperti gambar ini:
+
+ 
+c.	Hardening Sistem Pada Perangkat Jaringan
+■	Masuk ke dalam Mikrotik lalu buat firewall untuk blok VLAN 20 (Siswa) akses ke VLAN 30 (Server). IP → Firewall → Filter Rules → General ( Chain: forward, Src. Address: network siswa VLAN 20, Dst. Address : network server VLAN 30) → Action : drop
+ 
+
+■	buat firewall untuk mencatat Logging aktivitas penting (logging router VLAN 10,20,30). IP → Firewall → Filter Rules → General ( Chain: forward → Action : log dan ceklis Log
+Buat sebanyak 3 untuk Out Interface berbeda yaitu vlan 10, vlan 20, vlan 30
+
+ 
+
+ 
+
+
+
+■	Amankan akses router dari SSH dan Winbox, Akses winbox dan SSH hanya dapat diakses oleh VLAN 10 (Guru_Admin). Ijinkan akses SSH ke VLAN 10 (Guru_Admin) dengan cara: IP → Firewall → Filter Rules → General (Chain: input, Src. Address: 192.168.10.0/24, Dst.
+Address: 192.168.200.0/24, Protocol: 6(tcp), Dst. Port: 22) → Action:
+accept
+ 
+ 
+
+
+
+Blok Winbox dari akses VLAN 20 (Siswa) dengan cara IP → Firewall → Filter Rules → General ( Chain: input, Src Address: 192.168.20.0/24, Protocol: 6(tcp), Dst. Port: 8291) → Action: drop
+
+
+ 
+■	buat firewall untuk mengizinkan monitoring router ke Cacti.
+IP → Firewall → Filter Rules → General (Chain: input, Protocol: udp, Dst. Port: 161) → Action: accept
+
+
+
+Catatan:
+Seluruh Firewall di Filter Rules dikerjakan setelah konfigurasi server agar tidak mengalami permasalahan koneksi jaringan pada server atau bisa di non aktifkan terlebih dahulu untuk memulai konfigurasi server.
+
+
+Tampilan Firewall di mikrotik
+ 
+D.	LANGKAH KONFIGURASI SERVER
+a.	Remote Server
+■	Buka aplikasi Putty atau Powershell pada komputer kalian, kemudian akses alamat IP server yang sudah ditentukan bisa di lihat pada tabel Server Siswa
+■	Langkah remote menggunakan Putty, jika di komputer anda tidak ada aplikasi putty maka anda dapat mengunduh pada laman berikut https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.83-installer.msi
+Bila sebelumnya sudah pernah install Putty maka anda hanya perlu mencari aplikasinya pada kotak Search
+
+Maka tampil seperti berikut
+
+Klik saja icon Putty maka anda akan dibawa ke tampilan seperti dibawah
+
+Masukan IP address/hostname dan port 22, kemudian Klik Open
+ 
+*ip address diatas hanya contoh karena setiap siswa memiliki ip address server yang berbeda
+
+Masukan username vm-siswa dan password 123
+
+Jika tampil seperti ini maka tandanya anda sudah bisa melakukan remote server
+■	Langkah lain jika ingin menggunakan PowerShell
+Buka aplikasi PowerShell pada kotak Search bisa diketik
+
+Maka akan tampil seperti berikut
+ 
+ 
+Klik saja icon PowerShell maka anda akan dibawa ke tampilan seperti berikut
+
+Lanjutkan dengan mengetikan perintah SSH untuk melakukan remote server
+ssh vm-siswa@192.168.200.201
+Untuk informasi authenticity ketik yes
+
+Lanjutkan dengan memasukan password
+
+Jika berhasil maka anda akan dibawa ke halaman remote server
+
+ 
+b.	DNS Server (BIND9)
+■	Selanjutnya setelah anda berada pada tampilan remote server maka yang perlu anda lakukan adalah merubah user biasa menjadi super user yaitu root, caranya k
+
+Kemudian masukan password 123
+■	Lakukan update pada server Debian dengan perintah ini.
+
+ENTER, lalu Tunggu Beberapa saat hingga selesai Install super user do untuk kebutuhan konfigurasi
+ 
+■	Install Paket DNS Server (BIND9) dengan perintah ini
+
+ENTER, lalu Tunggu Beberapa saat hingga selesai
+■	Install Paket DNSutils (NSLOOKUP) dengan perintah ini
+
+ENTER, lalu Tunggu Beberapa saat hingga selesai
+■	Masuk ke Konfigurasi BIND9 dengan perintah ini
+
+Kemudian ENTER
+■	Disini anda akan diminta untuk memasukan perintah zona domain, digunakan untuk mendefinisikan atau mendeklarasikan zona-zona DNS yang dikelola secara lokal oleh server. File ini adalah tempat di mana Anda menuliskan instruksi agar server mengenali dan melayani permintaan untuk
+domain nama_siswa-ciksel.sch
+ 
+ 
+Jika Sudah Di Sama kan seperti pada Gambar, SAVE dengan cara : CTRL + X + Y + ENTER
+■	Copy file bernama db.local menjadi db.indra-ciksel dengan perintah ini :
+
+Kemudian tekan ENTER, lakukan pengecekan apakah filenya sudah ada atau tidak dengan masuk kedalam folder bind
+
+Kemudian kita lihat dengan perintah list
+
+Tampak dilayar db.indra-ciksel, ini adalah file template (contoh) atau basis data awal yang digunakan untuk memetakan nama localhost ke alamat IP.
+■	Mari kita konfigurasi file tersebut dengan masuk ke dalamnya dengan perintah berikut
+
+Klik ENTER, setelah masuk kita akan langsung ubah konfigurasi seperti berikut
+ 
+ 
+Ubah localhost menjadi domain nama_siswa-ciksel.sch kemudian tambahkan ip server kalian dan juga subdomain www serta monitor
+Jika Sudah Di Sama kan seperti pada Gambar, SAVE dengan cara : CTRL + X + Y + ENTER
+■	File selanjutnya yang akan kita ubah konfigurasi adalah db.192, lakukan cara seperti berikut
+Copy file bernama db.127 menjadi db.192
+
+Masuk kedalam file db.192 yang sudah kita buat
+
+Mari kita ubah konfigurasi didalamnya
+
+Jika Sudah Di Sama kan seperti pada Gambar, SAVE dengan cara :
+ 
+CTRL + X + Y + ENTER
+■	Masuk ke dalam file resolv dengan mengetikan langkah seperti berikut
+
+fungsi utama sebagai konfigurasi resolver DNS pada sisi klien. Agar saat pengujian secara local berhasil. Tambahkan IP Server kalian
+
+■	Restart BIND9 jika semua sudah sesuai. Dengan perintah ini
+
+■	Lakukan pengecekan apakah domain yang sudah kita buat berhasil digunakan dengan perintah nslookup seperti berikut
+
+ 
+Jika tampil seperti di atas tandanya DNS kalian nama_siswa-ciksel.sch, www.nama_siswa-ciksel.sch dan monitor.nama_siswa-ciksel.sch sudah berhasil dan dapat digunakan
+c.	Web Server & HTTPS (Apache + Let's Encrypt/Self-Signed)
+■	Selanjutnya kita akan mempersiapkan Web Server dengan menggunakan Apache, Install Paket Web Server (APACHE2) dengan perintah ini :
+
+ENTER, lalu Tunggu Beberapa saat hingga selesai
+■	Melakukan konfigurasi file 000-default.conf pada apache2 pada folder sites- available dengan cara seperti berikut
+
+Hapus baris keterangan yang berwarna biru jika sudah dibaca
+
+Kemudian konfigurasi file tersebut seperti berikut
+
+Tambahkan domain yang kita sudah buat pada baris ServerName dan
+ServerAlias
+ 
+Jika Sudah Di Sama kan seperti pada Gambar, SAVE dengan cara : CTRL + X + Y + ENTER
+■	Lakukan restart service Apache2 dengan perintah berikut
+
+Kemudian ENTER
+■	Buka browser aplikasi di komputer kalian (bisa menggunakan Chrome atau Microsoft Edge). Ketikan http://nama_siswa-ciksel.sch
+
+
+■	Kita lanjutkan memasang SSL (Secure Sockets Layer) adalah teknologi keamanan standar yang menjaga koneksi internet tetap aman dan melindungi data sensitif yang dikirimkan antara dua sistem. Mari kita Instalasi Certbot
+
+
+
+
+
+Lalu ENTER, selanjutnya lakukan restart apache2
+
+Mengambil Sertifikat SSL dengan jalankan perintah berikut untuk memulai proses otomatis pembuatan sertifikat
+
+Ikuti langkah yang diminta untuk data lokasi dan organisasi
+ 
+ 
+Buat SSL juga untuk alamat domain monitor.nama_siswa-ciksel.sch
+langkahnya sama seperti diatas
+
+Ikuti langkah yang diminta untuk data lokasi dan organisasi
+
+■	Sekarang kita akan membuat file apache untuk HTTPS protokol, caranya sebagai berikut
+
+■	Layar akan menampilkan isi dari file default-ssl.conf
+ 
+ 
+Hapus baris keterangan yang berwarna biru jika sudah dibaca Kemudian kita konfigurasi file tersebut seperti dibawah
+ 
+ 
+Mengaktifkan modul SSL di Apache lakukan langkah seperti dibawah
+
+Mengaktifkan konfigurasi default SSL lakukan langkah seperti dibawah
+
+Restart Apache untuk menerapkan perubahan seperti langkah dibawah
+
+■	Pengecekan apakah SSL sudah terpasang , buka browser (contoh edge) masukan URL https://nama_siswa-ciksel.sch
+Klik pada pojokan kiri not secure klik panah >
+
+Kemudian akan tampil seperti ini
+
+Klik gambar seperti SERTIFIKAT, maka akan muncul SSL crt seperti dibawah
+ 
+ 
+d.	Monitoring (Cacti)
+■	Cacti adalah aplikasi berbasis web yang digunakan untuk monitoring jaringan dan server secara real-time. Dalam tugas UKK ini, Cacti berfungsi sebagai pusat pengawasan kinerja infrastruktur yang Anda bangun. Mari kita lakukan install cacti dengan perintah berikut
+
+Lalu tekan ENTER, tunggu hingga muncul wizard boxs seperti dibawah
+
+Pilih apache2 kemudian tekan ENTER, hingga muncul gambar seperti dibawah
+ 
+ 
+Pilih Yes kemudian ENTER , hingga muncul tampilan seperti di bawah untuk proses membuat password untuk akses database
+
+Isi saja dengan password 123 agar mudah di ingat, kemudian tekan tombol tab untuk menggeser ke pilihan Ok lalu ENTER, memasukan kembali password untuk konfirmasi
+
+tekan tombol tab untuk menggeser ke pilihan Ok lalu ENTER, jika tampil seperti ini maka Cacti sudah terinstall
+ 
+ 
+■	Lanjutkan dengan konfigurasi snmpd.conf untuk kebutuhan agent dalam menarik data CPU dan Memory device
+
+Maka akan tampil seperti berikut
+
+Selanjutnya kita akan mencari baris agentaddress udp:161
+Cara agar mempercepat bisa menekan tombol CTRL + W
+
+Kita beri # bagi command yang tidak dibutuhkan kemudian tambahkan seperti berikut
+ 
+ 
+Selanjutnya kita akan mencari baris rocommunity
+Cara agar mempercepat bisa menekan tombol CTRL + W
+
+Kita beri # bagi command yang tidak dibutuhkan kemudian tambahkan seperti berikut
+
+Pada Bagian snmpd. Cari pada tulisan Agent Address dan recommunity, ubah pada menjadi sesuai gambar.
+Jika Sudah, SAVE dengan cara :CTRL + X + Y + ENTER Setelah selesai. Restart snmp nya dengan perintah ini
+ 
+■	Masuk Ke Konfigurasi apache2 Web Server Cacti. Kita akan memasang web server versi HTTP Dengan Perintah Ini :
+
+Kita akan membuat file sites untuk monitoring cacti
+
+Mari kita ubah isinya dan kita sesuaikan dengan tujuan peruntukan cacti
+ 
+ 
+Jika Sudah, SAVE dengan cara :CTRL + X + Y + ENTER Lakukan langkah berikut untuk enable site
+ 
+Dilanjutkan dengan reload apache
+
+Jika ada Notif Peringatan, maka ada masalah pada Konfigurasi. Jika tidak ada, maka Berhasil!
+■	Masuk Ke Konfigurasi apache2 Web Server Cacti. Kita akan memasang web server versi HTTPS Dengan Perintah Ini :
+
+Kita akan membuat file sites untuk monitoring cacti
+
+Mari kita ubah isinya dan kita sesuaikan dengan tujuan peruntukan cacti
+ 
+ 
+Jika Sudah, SAVE dengan cara :CTRL + X + Y + ENTER Lakukan langkah berikut untuk enable site
+
+Dilanjutkan dengan reload apache
+
+Jika ada Notif Peringatan, maka ada masalah pada Konfigurasi. Jika tidak ada, maka Berhasil!
+■	Buka URL alamat http://monitor.nama_siswa-ciksel.sch atau https://monitor.nama_siswa-ciksel.sch , jika berhasil maka akan muncul halaman seperti berikut
+
+ 
+■	Jika berhasil login maka dilanjutkan untuk mensetting agent cacti guna keperluan monitoring Server Live dan Router Mikrotik, yang akan kita monitoring adalah CPU dan Memory dari masing-masing device tersebut.
+Masukan username dan password :
+Username : admin Password : 123
+
+Maka kalian akan masuk ke dalam halaman dashboard cacti seperti ini
+
+■	Disini kita akan menambahkan Device Server kita agar bisa di monitoring oleh cacti
+klik Management > Devices
+
+
+Kemudian di pojok kanan atas ada gambar icon + silahkan di klik, ini adalah proses menambahkan devices server kita agar bisa di monitor oleh cacti
+ 
+ 
+
+Poin untuk ditambahkan adalah
+
+Description	: Server-Nama_Siswa
+Hostname	: 127.0.0.1
+Device Template	: Net-SNMP Device
+SNMP Version	: Version 2 SNMP Community String	: public SNMP Port		161
+Kemudian scroll sampai bawah dan klik CREATE
+Tunggu sampai sukses
+ 
+■	Disini kita akan menambahkan Device Router kita agar bisa di monitoring oleh cacti
+Klik Management > Devices
+
+Kemudian di pojok kanan atas ada gambar icon + silahkan di klik, ini adalah proses menambahkan devices server kita agar bisa di monitor oleh cacti
+
+Poin untuk ditambahkan adalah
+
+Description	: Router-Nama_Siswa
+Hostname	: 192.168.10.1
+Device Template	: Generic SNMP Device
+SNMP Version	: Version 2 SNMP Community String	: public SNMP Port		161
+Kemudian scroll sampai bawah dan klik CREATE
+ 
+ 
+Tunggu sampai sukses
+■	Sebelum membuat graphs untuk Router kita terlebih dahulu untuk mengkonfigurasi protokol SNMP pada Mikrotik, silahkan masuk ke dalam mikrotik menggunakan Winbox
+
+Masuk ke menu IP > SNMP
+Lalu ikuti langkah konfigurasi seperti berikut
+
+ 
+Pastikan centang Enabled. Conctact Info : admin Location : Router Ciksel
+Lalu klik apply, lanjutkan dengan Klik Communities
+
+Doble klik di name public, kemudian ikuti langkah berikut
+
+Name : public
+Address : 0.0.0.0/0 (atau tidak Ip router)
+Pastikan Centang Read Access, Jika sudah Lalu Apply.
+■	Selanjutnya kita akan menambahkan Graphs untuk Device Server dan Router kalian
+Klik menu Management > Trees > Default Tree
+ 
+ 
+Klik Edit Tree
+
+Klik Add Root Branch
+
+Buat folder tree items untuk Server dan Router kalian, setiap akan menambahkan tree items folder harus klik add root branch terlebih dahulu
+ 
+ 
+Sekarang kita akan memasukan Graph name
+
+Kita akan memasukkan Graph Name ke dalam Folder Tree Items dengan cara drag and drop graph. Langkah pertama klik Available Devices pilih Server- Nama_Siswa
+
+Lakukan drag and drop graph CPU Utilization dan graph Memory Usage SERVER kalian ke dalam folder Tree Server. Maka akan tampil seperti berikut
+ 
+ 
+Kita akan memasukkan Graph Name ke dalam Folder Tree Items dengan cara drag and drop graph. Langkah pertama klik Available Devices pilih Router- Nama_Siswa
+
+Lakukan drag and drop graph CPU Utilization dan graph Memory Usage ROUTER kalian ke dalam folder Tree Server. Maka akan tampil seperti berikut
+
+■	Selanjutnya kita akan melihat apakah Graph Items yang sudah kita pilih akan muncul apa tidak
+Masuk ke halaman Tab Graphs
+ 
+ 
+Klik Graphs
+Kemudian klik panah/segitiga di depan Default Tree
+
+Untuk melihat graph items router kalian bisa klik folder router dan juga untuk melihat graph items server kalian bisa klik folder server
+Berikut tampilan graph items server
+
+Berikut tampilan graph items router
+ 
+ 
+■	Bila mengalami masalah dalam menambahkan Item Graph kalian bisa masuk ke dalam menu Management > Devices > Pilih Devicenya (Server/Router)
+Kemudian scroll ke bawah sampai menu Graph Template Name
+Disana kalian bisa pilih Item yang akan dimonitoring kemudian klik add seperti berikut
+ 
+ 
+
+e.	Uninstall Service pada Server
+■	Jika kalian sudah menyelesaikan seluruh soal dan tugas jangan lupa setelah itu kosongkan kembali layanan Server dengan perintah berikut
+
+Klik Yes untuk menghapus semua layanan
+Kemudian lanjutkan perintah berikut untuk menghapus semua konfigurasi yang tertinggal
+
+■	Selesai sekarang server sudah kosong kembali dan bisa digunakan oleh siswa lain
+ 
+E.	PENGUJIAN DAN DOKUMENTASI
+1.	Hasil Pekerjaan meliputi screenshoot hasil pengujian
+●	VLAN berfungsi dan saling terisolasi. (VLAN 10 dan 20 bisa saling berkomunikasi)
+●	VLAN 20 tidak bisa akses VLAN 30.
+●	VLAN 10 dapat berkomunikasi dengan VLAN 30
+●	Domain nama_siswa-ciksel.sch dapat diakses Web monitoring dapat dibuka via HTTPS.
+●	Sistem Monitoring Real-Time Aktif menampilkan Router dan server muncul di
+dashboard monitoring.
+●	Pengamanan Router & Server sudah sesuai standar berupa Firewall bekerja efektif, Logging keamanan aktif.
+2.	Kebijakan Keamanan Informasi
+
+●	Password policy
+●	Pembagian akses VLAN
+●	Kebijakan penggunaan internet
+●	Kebijakan backup konfigurasi
 
